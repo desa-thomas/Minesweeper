@@ -1,8 +1,10 @@
 import java.util.Scanner;
-
+/*
+Class to help with test board methods
+ */
 public class Tester {
 
-    public static void main(String args []){
+    public static void main(String []args){
 
         int [] coordinates;
         int width = 16;
@@ -15,9 +17,14 @@ public class Tester {
 
 
         Scanner keyboard = new Scanner(System.in);
-        coordinates = board.getCoordinates(keyboard);
-        board.checkAdjacency(coordinates[0], coordinates[1]);
-
+        System.out.println("Q to quit testing: ");
+        String s = keyboard.nextLine();
+        while(!s.equals("Q")) {
+            coordinates = board.getCoordinates(keyboard);
+            System.out.println("Adjacency: "+ board.checkAdjacency(coordinates[0], coordinates[1]));
+            System.out.println("Q to quit testing: ");
+            s = keyboard.nextLine();
+        }
     }
 }
 
