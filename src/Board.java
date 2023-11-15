@@ -8,6 +8,13 @@ class contains 2 2D arrays for minesweeper
  */
 public class Board {
 
+    /*
+    gameBoard - board with unrevealed tiles
+    board - hidden board that shows where bombs are,,, for troubleshooting purposes
+    width - width of board
+    length - length of board (or vertical height)
+    BOMBS - number of bombs on board
+     */
     private String[][] gameBoard;
     private String[][] board;
     private final int width;
@@ -82,15 +89,30 @@ public class Board {
     }
 
     /*
-    reveals tile on gameBoard:
+    reveals tile on gameBoard with coordinates (x, y):
         1. if tile is a bomb end the game
         else:
         2. If tile is adjacent to bomb(s) put the number of bombs its adjacent to
         3. If tile is not adjacent to any bomb, keep revealing adjacent tiles until there are no more adjacent tiles
            with no adjacent bombs
      */
-    public String revealTile(){
-        return null;
+    public int revealTile(int x, int y){
+        int tile = -900;
+
+        if(!board[x][y].equals("[B]")){
+
+            int adj = checkAdjacency(x, y);
+            if(adj !=0){
+                gameBoard[x][y] = "["+adj+"]";
+                tile = adj;
+            }
+            else{
+                recursiveReveal(x,y);
+                tile = 0;
+            }
+        }
+
+        return tile;
     }
 
     /*
@@ -103,15 +125,21 @@ public class Board {
 
         int ttlAdjacent = -1;
 
-        if(board[x][y].equals("[B]")) System.err.println("Can't check adjacency of bomb");
+        if(validCoords(x, y)) {
 
-        else {
-            ttlAdjacent = 0;
-            for (int xIncrement = -1; xIncrement <= 1; xIncrement++) {
+            if (board[x][y].equals("[B]")) System.err.println("Can't check adjacency of bomb");
 
-                for (int yIncrement = -1; yIncrement <= 1; yIncrement++) {
 
-                    ttlAdjacent += board[x + xIncrement][y + yIncrement].equals("[B]") ? 1 : 0;
+            else {
+                ttlAdjacent = 0;
+                for (int xIncrement = -1; xIncrement <= 1; xIncrement++) {
+
+                    for (int yIncrement = -1; yIncrement <= 1; yIncrement++) {
+
+                        if ((x + xIncrement) > length || (y + yIncrement) > width) continue;
+
+                        ttlAdjacent += board[x + xIncrement][y + yIncrement].equals("[B]") ? 1 : 0;
+                    }
                 }
             }
         }
@@ -119,7 +147,46 @@ public class Board {
     }
 
     /*
-    for troubleshooting... prints hidden board with where bombs are
+    Recursively reveals tiles adjacent to tiles with no bombs adjacent to it
+    only run it on tiles with 0 adjacent bombs
+     */
+    private void recursiveReveal(int x, int y){
+        gameBoard[x][y] = "   ";
+        int adj;
+
+        //check adjacency for all tiles adjacent to it
+        for(int xIncrement = -1; xIncrement <= 1; xIncrement++){
+            for(int yIncrement = -1; yIncrement <= 1; yIncrement++){
+
+                int adjX = x + xIncrement;
+                int adjY = y + yIncrement;
+
+                if(!validCoords(adjX, adjY)) continue;
+
+                System.out.println(adjX + " " + adjY);
+
+                adj = checkAdjacency(adjX, adjY);
+
+                if (adj != 0 && adj != -1){
+                    gameBoard[adjX][adjY] = "[" + adj + "]";
+                }
+                else if (!gameBoard[adjX][adjY].equals("   ")){
+                    recursiveReveal(adjX, adjY);
+                }
+            }
+        }
+    }
+
+    /*
+    private helper method, returns true if coordinates x and y are valid
+     */
+    private boolean validCoords(int x, int y){
+
+        return !(x<1 || x > length || y < 1 || y >width);
+    }
+
+    /*
+    for troubleshooting... prints  the hidden board with where bombs are
      */
     public void printBoard() {
 
@@ -153,7 +220,6 @@ public class Board {
         }
     }
 
-
     /*
     public class that gets coordinates from keyboard input, used for troubleshooting and terminal gameplay
     @param keyboard Scanner object
@@ -169,7 +235,7 @@ public class Board {
                 int x = keyboard.nextInt();
                 int y = keyboard.nextInt();
 
-                if (x < 1 || x > length || y < 1 || y > width) {
+                if (!validCoords(x, y)) {
                     throw new BadCoordinateException(length, width);
                 }
 
