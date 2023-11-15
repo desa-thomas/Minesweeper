@@ -15,8 +15,8 @@ public class Board {
     length - length of board (or vertical height)
     BOMBS - number of bombs on board
      */
-    private String[][] gameBoard;
-    private String[][] board;
+    private final String[][] gameBoard;
+    private final String[][] board;
     private final int width;
     private final int length;
     private final int BOMBS;
@@ -70,7 +70,7 @@ public class Board {
      */
     private void addBombs() {
         Random r = new Random();
-        int randInt, x, y;
+        int x, y;
         int i = 0;
 
         while (i < BOMBS) {
@@ -80,10 +80,11 @@ public class Board {
             //if that spot on the board already contains a bomb, do it again
             if (this.board[x][y].equals("[B]")) {
                 continue;
-            } else {
-                this.board[x][y] = "[B]";
-                i++;
             }
+
+            this.board[x][y] = "[B]";
+            i++;
+
 
         }
     }
@@ -163,8 +164,6 @@ public class Board {
 
                 if(!validCoords(adjX, adjY)) continue;
 
-                System.out.println(adjX + " " + adjY);
-
                 adj = checkAdjacency(adjX, adjY);
 
                 if (adj != 0 && adj != -1){
@@ -190,8 +189,6 @@ public class Board {
      */
     public void printBoard() {
 
-        String str = "";
-
         for (String[] sArray : this.board) {
 
             for (String s : sArray) {
@@ -207,8 +204,6 @@ public class Board {
     prints game boards with hidden tiles
      */
     public void printGameBoard() {
-
-        String str = "";
 
         for (String[] sArray : this.gameBoard) {
 
@@ -259,7 +254,7 @@ public class Board {
     /*
     private helper class that extends exception. Throws exception if keyboard inputs bad coordintates
      */
-    private class BadCoordinateException extends Exception{
+    private static class BadCoordinateException extends Exception{
         int length, width;
         public BadCoordinateException(int length, int width){
             super("Coordinates Not In Range");
