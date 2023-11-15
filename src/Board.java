@@ -1,4 +1,7 @@
+import java.util.InputMismatchException;
 import java.util.Random;
+import java.util.Scanner;
+
 /*
 class contains 2 2D arrays for minesweeper
 
@@ -6,7 +9,7 @@ class contains 2 2D arrays for minesweeper
 public class Board {
 
     private String[][] gameBoard;
-    public String[][] board;
+    private String[][] board;
     private final int width;
     private final int length;
     private final int BOMBS;
@@ -81,18 +84,38 @@ public class Board {
     /*
     reveals tile on gameBoard:
         1. if tile is a bomb end the game
+        else:
         2. If tile is adjacent to bomb(s) put the number of bombs its adjacent to
         3. If tile is not adjacent to any bomb, keep revealing adjacent tiles until there are no more adjacent tiles
            with no adjacent bombs
      */
-    public void revealTile(){}
+    public String revealTile(){
+        return null;
+    }
 
     /*
     checks the amount of adjacent bombs to tile with coordinates (x, y)
+    Don't run on a tile with a Bomb
     @param x, y coordinates of tile to check
+    @return
      */
-    private int checkAdjacency(int x, int y){
-        return 0;
+    public int checkAdjacency(int x, int y){
+
+        int ttlAdjacent = -1;
+
+        if(board[x][y].equals("[B]")) System.err.println("Can't check adjacency of bomb");
+
+        else {
+            ttlAdjacent = 0;
+            for (int xIncrement = -1; xIncrement <= 1; xIncrement++) {
+
+                for (int yIncrement = -1; yIncrement <= 1; yIncrement++) {
+
+                    ttlAdjacent += board[x + xIncrement][y + yIncrement].equals("[B]") ? 1 : 0;
+                }
+            }
+        }
+        return ttlAdjacent;
     }
 
     /*
@@ -127,6 +150,55 @@ public class Board {
             }
 
             System.out.println();
+        }
+    }
+
+
+    /*
+    public class that gets coordinates from keyboard input, used for troubleshooting and terminal gameplay
+    @param keyboard Scanner object
+    @return 2D array length 2 containing (x, y) coordinates (coordinates[0] = x  and coordinates[1] = y)
+     */
+    public int [] getCoordinates (Scanner keyboard) {
+        int [] coordinates = new int[2];
+        boolean gettingCoords = true;
+
+        while(gettingCoords) {
+            System.out.println("Enter coordinates x y: ");
+            try {
+                int x = keyboard.nextInt();
+                int y = keyboard.nextInt();
+
+                if (x < 1 || x > length || y < 1 || y > width) {
+                    throw new BadCoordinateException(length, width);
+                }
+
+                else {
+                    coordinates[0] = x;
+                    coordinates[1] = y;
+                    gettingCoords = false;
+                }
+            } catch (InputMismatchException e) {
+                System.err.println("Not a pair of integers");
+                keyboard.nextLine();
+            } catch (BadCoordinateException e) {
+                System.err.println(e.getMessage());
+                keyboard.nextLine();
+            }
+        }
+        return coordinates;
+
+    }
+
+    /*
+    private helper class that extends exception. Throws exception if keyboard inputs bad coordintates
+     */
+    private class BadCoordinateException extends Exception{
+        int length, width;
+        public BadCoordinateException(int length, int width){
+            super("Coordinates Not In Range");
+            this.length = length;
+            this.width = width;
         }
     }
 
