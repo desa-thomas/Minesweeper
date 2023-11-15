@@ -9,27 +9,27 @@ public class Tester {
         int [] coordinates;
         int width = 16;
         int length = 16;
-        Board board = new Board(length, width, 40);
+        Minesweeper minesweeper= new Minesweeper(length, width, 40);
         String line = "-".repeat(width*4);
         Scanner keyboard = new Scanner(System.in);
 
-        board.printBoard();
+        minesweeper.printBoard();
         System.out.println(line);
         System.out.println(line);
-        coordinates = board.getCoordinates(keyboard);
+        coordinates = minesweeper.getCoordinates(keyboard);
         int x = coordinates[0];
         int y = coordinates[1];
 
-        board.revealTile(x, y);
+        minesweeper.revealTile(x, y);
 
-        board.printGameBoard();
+        minesweeper.printGameBoard();
 
 
 
 
     }
 
-    public static void testAdjacency(Board board){
+    public static void testAdjacency(Minesweeper board){
         int [] coordinates;
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Q to quit testing: ");

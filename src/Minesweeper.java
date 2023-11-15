@@ -6,7 +6,7 @@ import java.util.Scanner;
 class contains 2 2D arrays for minesweeper
 
  */
-public class Board {
+public class Minesweeper {
 
     /*
     gameBoard - board with unrevealed tiles
@@ -24,7 +24,7 @@ public class Board {
     /*
     constructor for Board class
      */
-    public Board(int length, int width, int bombs) {
+    public Minesweeper(int length, int width, int bombs) {
         this.board = new String[length +1][width +1];
         this.length = length;
         this.width = width;
@@ -88,7 +88,6 @@ public class Board {
 
         }
     }
-
 
     /*
     reveals tile on gameBoard with coordinates (x, y):
