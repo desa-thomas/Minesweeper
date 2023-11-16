@@ -321,6 +321,7 @@ public class Minesweeper {
 
         while(game){
             System.out.println(line);
+            System.out.println("MINES: " + MINES);
             printGameBoard();
             System.out.println(line);
             action = getAction(keyboard);
