@@ -44,10 +44,11 @@ public class Main {
 
             game.startGame(keyboard);
             System.out.println("Continue playing (Y - yes, anything else no): ");
-            ans = keyboard.nextLine();
+            ans = keyboard.nextLine().strip();
             if(!ans.equalsIgnoreCase("y")){
                 playing = false;
             }
+
 
         }
         keyboard.close();

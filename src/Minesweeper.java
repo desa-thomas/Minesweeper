@@ -1,4 +1,4 @@
-import javax.naming.ldap.StartTlsRequest;
+
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -302,14 +302,14 @@ public class Minesweeper {
     /*
 
      */
-    private void flagTile(int x, int y){
+    private void flagTile(int x, int y) {
 
-        if(gameBoard[x][y].equals(" * ")){
-            gameBoard[x][y] = "[ ]";
-        }
-        else {
+        if(gameBoard[x][y].equals(" * ")) gameBoard[x][y] = "[ ]";
+
+        else if (!gameBoard[x][y].equals("   ") || gameBoard[x][y].equals("[ ]")) {
             gameBoard[x][y] = " * ";
         }
+
     }
 
     /*
