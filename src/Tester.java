@@ -9,21 +9,12 @@ public class Tester {
         int [] coordinates;
         int width = 16;
         int length = 16;
-        Minesweeper minesweeper= new Minesweeper(length, width, 40);
+        Minesweeper minesweeper= new Minesweeper(5, 5, 10);
         String line = "-".repeat(width*4);
         Scanner keyboard = new Scanner(System.in);
 
         minesweeper.printBoard();
-        System.out.println(line);
-        System.out.println(line);
-        coordinates = minesweeper.getCoordinates(keyboard);
-        int x = coordinates[0];
-        int y = coordinates[1];
-
-        minesweeper.revealTile(x, y);
-
-        minesweeper.printGameBoard();
-
+        minesweeper.startGame(keyboard);
 
 
 

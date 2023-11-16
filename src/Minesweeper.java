@@ -19,16 +19,22 @@ public class Minesweeper {
     private final String[][] board;
     private final int width;
     private final int length;
-    private final int BOMBS;
+    private final int MINES;
+    private int revealedTiles = 0;
+    private final int ttlTiles;
+    private final String line;
+
 
     /*
     constructor for Board class
      */
-    public Minesweeper(int length, int width, int bombs) {
+    public Minesweeper(int length, int width, int mines) {
         this.board = new String[length +1][width +1];
         this.length = length;
         this.width = width;
-        this.BOMBS = bombs;
+        this.MINES = mines;
+        this.line = "-".repeat((width+1)*4);
+        this.ttlTiles = length * width;
 
         this.gameBoard = new String[length +1][width +1];
 
@@ -73,7 +79,7 @@ public class Minesweeper {
         int x, y;
         int i = 0;
 
-        while (i < BOMBS) {
+        while (i < MINES) {
             x = r.nextInt(1, length+1);
             y = r.nextInt(1, width+1);
 
@@ -97,13 +103,16 @@ public class Minesweeper {
         3. If tile is not adjacent to any bomb, keep revealing adjacent tiles until there are no more adjacent tiles
            with no adjacent bombs
      */
-    public int revealTile(int x, int y){
+    private int revealTile(int x, int y){
         int tile = -900;
 
+        //if tile isn't bomb
         if(!board[x][y].equals("[B]")){
 
             int adj = checkAdjacency(x, y);
+
             if(adj !=0){
+                revealedTiles += 1;
                 gameBoard[x][y] = "["+adj+"]";
                 tile = adj;
             }
@@ -152,6 +161,7 @@ public class Minesweeper {
     only run it on tiles with 0 adjacent bombs
      */
     private void recursiveReveal(int x, int y){
+        revealedTiles += 1;
         gameBoard[x][y] = "   ";
         int adj;
 
@@ -166,7 +176,7 @@ public class Minesweeper {
 
                 adj = checkAdjacency(adjX, adjY);
 
-                if (adj != 0 && adj != -1){
+                if (adj != 0 ){
                     gameBoard[adjX][adjY] = "[" + adj + "]";
                 }
                 else if (!gameBoard[adjX][adjY].equals("   ")){
@@ -216,7 +226,7 @@ public class Minesweeper {
     }
 
     /*
-    public class that gets coordinates from keyboard input, used for troubleshooting and terminal gameplay
+    gets coordinates from keyboard input, used for troubleshooting and terminal gameplay
     @param keyboard Scanner object
     @return 2D array length 2 containing (x, y) coordinates (coordinates[0] = x  and coordinates[1] = y)
      */
@@ -261,6 +271,105 @@ public class Minesweeper {
             this.length = length;
             this.width = width;
         }
+    }
+
+    /*
+    method that gets action from keyboard input:
+    action can either be f for flag, or r for reveal
+     */
+    private String getAction(Scanner keyboard){
+        boolean getting = true;
+        String action = "";
+
+        while(getting){
+            System.out.println("Enter Action (f - flag, r - reveal, 0 - quit): ");
+            action = keyboard.next();
+
+            if (!action.equalsIgnoreCase("f") && !action.equalsIgnoreCase("r") && !action.equals("0")){
+                System.err.println("Not a Valid Action");
+            }
+            else{
+                getting = false;
+            }
+        }
+        return action;
+
+    }
+
+    /*
+
+     */
+    private void flagTile(int x, int y){
+
+        if(gameBoard[x][y].equals(" * ")){
+            gameBoard[x][y] = "[ ]";
+        }
+        else {
+            gameBoard[x][y] = " * ";
+        }
+    }
+
+    /*
+    game loop, to be executed in the Main classes main method.
+     */
+    public void startGame(Scanner keyboard){
+        boolean game = true;
+        int [] coords;
+        int x;
+        int y;
+        String action;
+
+        while(game){
+            System.out.println(line);
+            printGameBoard();
+            System.out.println(line);
+            action = getAction(keyboard);
+
+            coords = getCoordinates(keyboard);
+            x = coords[0];
+            y = coords[1];
+
+            if(action.equalsIgnoreCase("r") ){
+                //if they want to reveal a tile that's already revealed
+                while((!gameBoard[x][y].equals("[ ]") && !gameBoard[x][y].equals(" * "))) {
+                    System.err.println("Tile Already Revealed");
+                    coords = getCoordinates(keyboard);
+                    x = coords[0];
+                    y = coords[1];
+                }
+            }
+
+            //flag tile
+            if(action.equalsIgnoreCase("f")){
+                flagTile(x, y);
+            }
+
+            //if player reveals tile
+            else if (action.equalsIgnoreCase("r")){
+
+                //if player reveals a bomb end game and show all bombs
+                if (revealTile(x, y) < 0) {
+                    game = false;
+                    System.out.println(line);
+                    printBoard();
+                    System.out.println(line);
+                    System.out.println("-".repeat(((width+1)*4)/2 - 4) + "GAME OVER" + "-".repeat(((width+1)*4)/2 - 4));
+                }
+
+                //if player reveals all tiles that aren't bombs
+                else if(revealedTiles == ttlTiles - MINES){
+                    game = false;
+                    printGameBoard();
+                    System.out.println("-".repeat(((width+1)*4)/2 - 3) + "YOU WIN" + "-".repeat(((width+1)*4)/2 - 3));
+                }
+            }
+
+            //if player quits game
+            else{
+                game = false;
+            }
+        }
+
     }
 
 }
