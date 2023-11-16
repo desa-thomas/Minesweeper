@@ -1,3 +1,4 @@
+import javax.naming.ldap.StartTlsRequest;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -176,7 +177,10 @@ public class Minesweeper {
                 adj = checkAdjacency(adjX, adjY);
 
                 if (adj != 0 ){
+                    if(gameBoard[adjX][adjY].equals("[ ]")) revealedTiles += 1;
+
                     gameBoard[adjX][adjY] = "[" + adj + "]";
+
                 }
                 else if (!gameBoard[adjX][adjY].equals("   ")){
                     recursiveReveal(adjX, adjY);
@@ -321,9 +325,17 @@ public class Minesweeper {
         while(game){
             System.out.println(line);
             System.out.println("MINES: " + MINES);
+            System.out.println("REVEALED: "+ revealedTiles);
+            System.out.println("TTL TILES: " + (ttlTiles-MINES));
             printGameBoard();
             System.out.println(line);
             action = getAction(keyboard);
+
+            if(action.equals("0")){
+                game = false;
+                keyboard.nextLine();
+                continue;
+            }
 
             coords = getCoordinates(keyboard);
             x = coords[0];
@@ -354,6 +366,7 @@ public class Minesweeper {
                     printBoard();
                     System.out.println(line);
                     System.out.println("-".repeat(((width+1)*4)/2 - 4) + "GAME OVER" + "-".repeat(((width+1)*4)/2 - 4));
+                    keyboard.nextLine();
                 }
 
                 //if player reveals all tiles that aren't bombs
@@ -361,13 +374,10 @@ public class Minesweeper {
                     game = false;
                     printGameBoard();
                     System.out.println("-".repeat(((width+1)*4)/2 - 3) + "YOU WIN" + "-".repeat(((width+1)*4)/2 - 3));
+                    keyboard.nextLine();
                 }
             }
 
-            //if player quits game
-            else{
-                game = false;
-            }
         }
 
     }
