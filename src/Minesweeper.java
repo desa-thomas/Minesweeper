@@ -102,6 +102,7 @@ public class Minesweeper {
         3. If tile is not adjacent to any bomb, keep revealing adjacent tiles until there are no more adjacent tiles
            with no adjacent bombs
      */
+
     private int revealTile(int x, int y){
         int tile = -900;
 
