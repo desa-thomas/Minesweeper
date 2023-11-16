@@ -3,8 +3,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 /*
-class contains 2 2D arrays for minesweeper
-
+Minesweeper game class
  */
 public class Minesweeper {
 
